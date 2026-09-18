@@ -1,0 +1,240 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String    @default("USER") // USER or ADMIN
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  orders        Order[]
+  addresses     Address[]
+  reviews       Review[]
+  cart          Cart?
+  wishlist      Wishlist?
+  notifications Notification[]
+  auditLogs     AuditLog[]
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  products    Product[]
+}
+
+model Product {
+  id          String         @id @default(cuid())
+  name        String
+  slug        String         @unique
+  description String
+  price       Float
+  compareAt   Float?
+  categoryId  String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  category    Category       @relation(fields: [categoryId], references: [id])
+  images      ProductImage[]
+  reviews     Review[]
+  inventory   Inventory?
+  cartItems   CartItem[]
+  wishlistItems WishlistItem[]
+  orderItems  OrderItem[]
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String?
+  isPrimary Boolean  @default(false)
+  productId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Inventory {
+  id        String   @id @default(cuid())
+  productId String   @unique
+  quantity  Int      @default(0)
+  sku       String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  productId String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@unique([cartId, productId])
+}
+
+model Wishlist {
+  id        String         @id @default(cuid())
+  userId    String         @unique
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     WishlistItem[]
+}
+
+model WishlistItem {
+  id         String   @id @default(cuid())
+  wishlistId String
+  productId  String
+  createdAt  DateTime @default(now())
+
+  wishlist   Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  product    Product  @relation(fields: [productId], references: [id])
+
+  @@unique([wishlistId, productId])
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  userId        String
+  total         Float
+  status        String      @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+  paymentStatus String      @default("UNPAID") // UNPAID, PAID, FAILED, REFUNDED
+  addressId     String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  user          User        @relation(fields: [userId], references: [id])
+  address       Address     @relation(fields: [addressId], references: [id])
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+model Address {
+  id         String   @id @default(cuid())
+  userId     String
+  street     String
+  city       String
+  state      String
+  postalCode String
+  country    String
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders     Order[]
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  userId    String
+  rating    Int      // 1-5
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Coupon {
+  id            String   @id @default(cuid())
+  code          String   @unique
+  discountType  String   // PERCENTAGE, FIXED
+  discountValue Float
+  validFrom     DateTime
+  validTo       DateTime
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ---------------------------------------------------------
+// SECURITY SIMULATION LAYER
+// ---------------------------------------------------------
+
+model SecurityEvent {
+  id          String   @id @default(cuid())
+  type        String   // SIMULATED_MALICIOUS_CLICK, SIMULATED_PAYLOAD, SIMULATED_THREAT_DETECTED, etc.
+  severity    String   // LOW, MEDIUM, HIGH, CRITICAL
+  source      String   // Which component/module generated this
+  sessionId   String?  // Associated session if known
+  metadata    String?  // JSON stringified payload
+  status      String   @default("LOGGED") // LOGGED, INVESTIGATING, RESOLVED, IGNORED
+  timestamp   DateTime @default(now())
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  action      String   // LOGIN, UPDATE_PASSWORD, DELETE_PRODUCT, etc.
+  resource    String?  // Product, User, etc.
+  resourceId  String?
+  details     String?  // JSON details
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+
+  user        User?    @relation(fields: [userId], references: [id])
+}

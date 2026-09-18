@@ -1,0 +1,1 @@
+export default function Page() { return <div className="py-8 text-xl text-muted-foreground">This section is currently under construction.</div>; }
