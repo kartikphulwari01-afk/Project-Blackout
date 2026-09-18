@@ -18,7 +18,7 @@ export function BlackoutWidget({ enabled }: { enabled: boolean }) {
     
     // Prevent showing on admin pages or if already run this session
     if (pathname.startsWith('/admin')) return;
-    if (sessionStorage.getItem('blackout_simulation_run') === 'true') return;
+    if (sessionStorage.getItem('mosaic_blackout_demo_complete') === 'true') return;
 
     // Wait 3-4 seconds before showing overlay
     const timer = setTimeout(() => {
@@ -47,7 +47,7 @@ export function BlackoutWidget({ enabled }: { enabled: boolean }) {
     setIsVerified(true);
     
     // Mark as run for this session
-    sessionStorage.setItem('blackout_simulation_run', 'true');
+    sessionStorage.setItem('mosaic_blackout_demo_complete', 'true');
 
     try {
       // Log the event
