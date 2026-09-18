@@ -1,9 +1,6 @@
 # Project-Blackout
 Project Blackout — A controlled cybersecurity research project focused on web-based malware propagation, attack simulation, threat detection, and security analysis.
 
-## MOSAIC E-commerce Core
-This repository contains the full-stack code for MOSAIC, a premium e-commerce platform designed with Next.js 14, Tailwind CSS, and Prisma.
-
 ## Getting Started
 First, install the dependencies:
 ```bash
