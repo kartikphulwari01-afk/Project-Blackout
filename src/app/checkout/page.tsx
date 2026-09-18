@@ -16,7 +16,7 @@ export default function CheckoutPage() {
   const router = useRouter();
 
   // Address state
-  const [address, setAddress] = useState({
+  const [address] = useState({
     street: '123 Cyber Street',
     city: 'Tech City',
     postalCode: '10001'

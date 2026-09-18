@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { securityEventBus } from './events';
-import { SecurityEventPayload, SecurityEventType, Severity } from './types';
+import { SecurityEventType, Severity } from './types';
 
 /**
  * The simulator allows forcing simulated threat states for demonstration purposes.

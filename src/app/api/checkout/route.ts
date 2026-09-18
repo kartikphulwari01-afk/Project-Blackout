@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
           status: 'PROCESSING',
           paymentStatus: 'PAID', // Simulated
           items: {
-            create: items.map((item: any) => ({
+            create: items.map((item: { productId: string, quantity: number, price: number }) => ({
               productId: item.productId,
               quantity: item.quantity,
               price: item.price
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
         }
       }),
       // Decrement inventory for all items
-      ...items.map((item: any) => 
+      ...items.map((item: { productId: string, quantity: number, price: number }) => 
         prisma.inventory.updateMany({
           where: { productId: item.productId },
           data: { quantity: { decrement: item.quantity } }

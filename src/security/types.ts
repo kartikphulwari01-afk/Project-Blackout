@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type Severity = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 
 export type EventStatus = 'LOGGED' | 'INVESTIGATING' | 'RESOLVED' | 'IGNORED';

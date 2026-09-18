@@ -4,6 +4,7 @@ import './globals.css';
 import { Providers } from '@/components/providers';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { BlackoutWidget } from '@/components/security/BlackoutWidget';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -17,6 +18,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isBlackoutEnabled = process.env.BLACKOUT_SIMULATION_ENABLED === 'true';
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans min-h-screen flex flex-col`}>
@@ -26,6 +29,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <BlackoutWidget enabled={isBlackoutEnabled} />
         </Providers>
       </body>
     </html>

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { Shield, ShieldAlert, ShieldCheck, Activity, Terminal, AlertTriangle, Bug } from "lucide-react";
+import { Shield, ShieldAlert, Activity, Terminal, AlertTriangle, Bug } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 export default async function SecurityDashboard() {
@@ -51,7 +51,7 @@ export default async function SecurityDashboard() {
         <div className="p-6 rounded-2xl bg-card border border-border">
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-medium text-muted-foreground">System Status</h3>
-            <ShieldCheck className="w-5 h-5 text-green-500" />
+            <Shield className="w-5 h-5 text-green-500" />
           </div>
           <p className="text-lg font-bold text-green-500">MONITORING ACTIVE</p>
         </div>
@@ -126,7 +126,7 @@ export default async function SecurityDashboard() {
           <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
             <div className="space-y-6 relative before:absolute before:inset-0 before:ml-4 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border before:to-transparent">
               
-              {events.slice(0, 4).map((event, i) => (
+              {events.slice(0, 4).map((event) => (
                 <div key={event.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                   <div className="flex items-center justify-center w-8 h-8 rounded-full border-4 border-background bg-secondary text-muted-foreground shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
                     <div className={`w-2 h-2 rounded-full ${event.severity === 'CRITICAL' || event.severity === 'HIGH' ? 'bg-destructive' : 'bg-primary'}`}></div>

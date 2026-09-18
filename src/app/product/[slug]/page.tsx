@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Star, Truck, ShieldCheck, Heart } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Star } from "lucide-react";
+// import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
 import { ProductActions } from "@/components/shop/ProductActions";
 
@@ -50,7 +50,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
           </div>
           {/* Thumbnails placeholder */}
           <div className="flex gap-4">
-            {product.images.map((img, i) => (
+            {product.images.map((img) => (
               <div key={img.id} className={`relative w-24 h-24 bg-secondary rounded-xl overflow-hidden cursor-pointer ${img.isPrimary ? 'ring-2 ring-primary ring-offset-2' : ''}`}>
                 <Image src={img.url} alt={img.alt || product.name} fill className="object-cover" />
               </div>
